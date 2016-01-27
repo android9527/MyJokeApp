@@ -1,9 +1,10 @@
 package com.android.jokeapp.adapter;
 
-import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -105,7 +106,11 @@ private List<TextModel> list;
         }
         
         final TextModel textModel = list.get(position);
-        holder.menuTitle.setText(textModel.getText());
+        String text = textModel.getText();
+		if (!TextUtils.isEmpty(text)) {
+			holder.menuTitle.setText(Html.fromHtml(text).toString().trim());
+		}
+        
         holder.itemTextDing.setText(String.valueOf(textModel.getDingNumber()));
         holder.itemTextCai.setText(String.valueOf(textModel.getCaiNumber()));
         
