@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<lint>
-    <issue id="ResourceAsColor" severity="ignore">
-        <ignore path="src/com/android/jokeapp/adapter/MyJokeListAdapter.java" />
-    </issue>
-    <issue id="ViewHolder">
-        <ignore path="src/com/android/jokeapp/fragment/FragmentJokeContent.java" />
-    </issue>
-</lint>
