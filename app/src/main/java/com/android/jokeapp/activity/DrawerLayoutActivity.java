@@ -34,6 +34,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.jokeapp.R;
+import com.android.jokeapp.common.Constants;
 import com.android.jokeapp.fragment.FragmentBase;
 import com.android.jokeapp.fragment.FragmentCharAt;
 import com.android.jokeapp.fragment.FragmentJokRecommend;
@@ -42,6 +43,7 @@ import com.android.jokeapp.util.DeviceUtils;
 import com.android.jokeapp.util.SystemBarTintManager;
 import com.android.jokeapp.util.SystemBarTintUtil;
 import com.nineoldandroids.view.ViewHelper;
+import com.openmediation.sdk.splash.SplashAd;
 
 import static com.android.jokeapp.common.Constants.LEFT_MENU;
 
@@ -132,9 +134,6 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
 
-        // The drawer title must be set in order to announce state changes when
-        // accessibility is turned on. This is typically a simple description,
-        // e.g. "Navigation".
         //        mDrawerLayout.setDrawerTitle(GravityCompat.START, getString(R.string.drawer_title));
 
 
@@ -151,9 +150,6 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
 //        initInsetTop(frameContent);
         //        initTint();
         switchContent(0);
-
-//        showBanner();
-
         requestPermissions();
     }
 
@@ -222,6 +218,7 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
                 if (mCurrentContent == contentChatFragment) {
                     return;
                 }
+                showIsAd();
                 break;
             case 3:
                 if (currPosition == 3)
@@ -497,5 +494,13 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
             System.exit(0);
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (SplashAd.isReady(Constants.SPLASH_PID)) {
+            SplashAd.showAd(this, Constants.SPLASH_PID);
+        }
     }
 }

@@ -1,12 +1,12 @@
 package com.android.jokeapp.util;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import android.os.Handler;
+import android.os.Message;
+
+import com.android.jokeapp.common.Constants;
+import com.android.jokeapp.model.TencentModel;
+import com.android.jokeapp.model.TextModel;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -15,16 +15,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONObject;
 
-import com.android.jokeapp.common.Constants;
-import com.android.jokeapp.model.TencentModel;
-import com.android.jokeapp.model.TextModel;
-import com.google.gson.Gson;
-
-import android.os.Handler;
-import android.os.Message;
-import android.security.keystore.KeyInfo;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ApiUtil {
     public static final String APIKEY = "215f991c74c93189913fc5177d5906c5";
@@ -99,8 +96,10 @@ public class ApiUtil {
             for (int i = 0; i < count; i++) {
 //                String result = queryStringForGet(requestUrl);
 
-                String result = TuLingUtils.httpPost(info);
-                TextModel textModel = gson.fromJson(result, TextModel.class);
+//                String result = TuLingUtils.httpPost(info);
+//                TextModel textModel = gson.fromJson(result, TextModel.class);
+
+                TextModel textModel = TencentUtil.httpGet(info);
                 textModel.initDingAndCaiNumber();
                 textModels.add(textModel);
             }
@@ -109,12 +108,6 @@ public class ApiUtil {
                     .obtainMessage(Constants.MESSAGE_WHAT_SUCCESS);
             message.obj = textModels;
             handler.sendMessage(message);
-        } catch (UnsupportedEncodingException e) {
-            handler.sendEmptyMessage(Constants.MESSAGE_WHAT_EXCEPTION);
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            handler.sendEmptyMessage(Constants.MESSAGE_WHAT_EXCEPTION);
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
             handler.sendEmptyMessage(Constants.MESSAGE_WHAT_EXCEPTION);

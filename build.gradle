@@ -19,6 +19,9 @@ allprojects {
         google()
         jcenter()
         maven { url 'https://mirrors.tencent.com/nexus/repository/maven-public/' }
+        maven {
+            url 'https://dl.openmediation.com/omcenter/'
+        }
     }
 }
 

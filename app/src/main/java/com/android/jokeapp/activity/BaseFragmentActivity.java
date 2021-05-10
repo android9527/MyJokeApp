@@ -1,13 +1,18 @@
 package com.android.jokeapp.activity;
 
-import com.android.jokeapp.R;
+import com.android.jokeapp.common.Constants;
+import com.openmediation.sdk.InitCallback;
+import com.openmediation.sdk.InitConfiguration;
+import com.openmediation.sdk.OmAds;
+import com.openmediation.sdk.interstitial.InterstitialAd;
+import com.openmediation.sdk.splash.SplashAd;
+import com.openmediation.sdk.splash.SplashAdListener;
+import com.openmediation.sdk.utils.error.Error;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -16,21 +21,7 @@ public class BaseFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 初始化接口，应用启动的时候调用
-        // 参数：appId, appSecret, 调试模式
-//        AdManager.getInstance(this).init("93348c2ae3be5483", "a0481c3c65f79729", true);
-        // 初始化接口，应用启动的时候调用
-        // 参数：appId, appSecret, 调试模式
-//        AdManager.getInstance(this).init("73057fb81878f2ba",
-//                    "f2707618edb7c2a4");
-        // 设置是否开启有米广告SDK Log。默认值为true，标识开启， false为关闭log
-//        AdManager.getInstance(this).setEnableDebugLog(true);
-
-        // 设置是否在通知栏显示下载相关提示。默认为true，标识开启；设置为false则关闭。
-//        AdManager.setIsDownloadTipsDisplayOnNotification(false);
-
-        // 获取是否在通知栏显示下载进度的值。
-//        AdManager.isDownloadTipsDisplayOnNotification();
+        initSDK();
     }
 
     @Override
@@ -63,7 +54,77 @@ public class BaseFragmentActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    protected void onResume() {
+        super.onResume();
+        OmAds.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        OmAds.onPause(this);
+    }
+
+    private void initSDK() {
+        InitConfiguration configuration = new InitConfiguration.Builder()
+                .appKey(Constants.APP_KEY)
+                .preloadAdTypes(OmAds.AD_TYPE.INTERSTITIAL)
+                .build();
+        OmAds.init(this, configuration, new InitCallback() {
+
+            // Invoked when the initialization is successful.
+            @Override
+            public void onSuccess() {
+            }
+
+            // Invoked when the initialization is failed.
+            @Override
+            public void onError(Error error) {
+            }
+        });
+    }
+
+    protected void showIsAd() {
+        InterstitialAd.showAd();
+    }
+
+    protected void loadSplash(String pid) {
+        SplashAd.setSplashAdListener(pid, new SplashAdListener() {
+            @Override
+            public void onSplashAdLoad(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdFailed(String s, String s1) {
+
+            }
+
+            @Override
+            public void onSplashAdClicked(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdShowed(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdShowFailed(String s, String s1) {
+
+            }
+
+            @Override
+            public void onSplashAdTick(String s, long l) {
+
+            }
+
+            @Override
+            public void onSplashAdDismissed(String s) {
+                SplashAd.loadAd(s);
+            }
+        });
+        SplashAd.loadAd(pid);
     }
 }

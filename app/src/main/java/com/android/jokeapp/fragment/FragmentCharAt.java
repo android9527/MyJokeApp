@@ -174,13 +174,10 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
             entity.setName("我");
             entity.setMsgType(false);
             entity.setText(contString);
-
             mDataArrays.add(entity);
             mAdapter.notifyDataSetChanged();
             ApiUtil.executeMessageTask(mGetMessageHandler, contString);
-
             mEditTextContent.setText("");
-
             mListView.setSelection(mListView.getCount() - 1);
         }
 
@@ -283,5 +280,6 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         final ChatMsgEntity chatMsgEntity = mAdapter.getItem(position);
         startSpeaking(chatMsgEntity.getText());
     }
+
 
 }

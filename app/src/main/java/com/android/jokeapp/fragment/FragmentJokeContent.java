@@ -68,7 +68,6 @@ public class FragmentJokeContent extends FragmentBase {
         // ViewPager.LayoutParams layoutParams = (ViewPager.LayoutParams) pagerTabStrip.getLayoutParams();
         // layoutParams.topMargin = config.getPixelInsetTop(true);
 
-        // TODO ActionBar �߶�Ҫ����
         // layoutParams.height = /*MxxUiUtil.dip2px(this, 48) + */config.getPixelInsetTop(true) + 96;
         // pagerTabStrip.requestLayout();
 

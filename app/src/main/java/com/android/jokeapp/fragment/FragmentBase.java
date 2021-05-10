@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.android.jokeapp.R;
 import com.android.jokeapp.activity.DrawerLayoutActivity;
+import com.android.jokeapp.common.Constants;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -18,10 +22,18 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.iflytek.speech.setting.IatSettings;
+import com.openmediation.sdk.banner.AdSize;
+import com.openmediation.sdk.banner.BannerAd;
+import com.openmediation.sdk.banner.BannerAdListener;
+import com.openmediation.sdk.splash.SplashAd;
+import com.openmediation.sdk.splash.SplashAdListener;
 
 public class FragmentBase extends Fragment {
 
     private static final String TAG = "FragmentBase";
+
+    protected RelativeLayout mAdView;
+    BannerAd mBannerAd;
 
     public void initInsetTop(View rootView) {
         // SystemBarTintManager tintManager = new SystemBarTintManager(getActivity());
@@ -50,10 +62,12 @@ public class FragmentBase extends Fragment {
     }
 
     protected void releaseTTS() {
-        // 退出时释放连接
-        mTts.stopSpeaking();
-        // 退出时释放连接
-        mTts.destroy();
+        if (mTts != null) {
+            // 退出时释放连接
+            mTts.stopSpeaking();
+            // 退出时释放连接
+            mTts.destroy();
+        }
     }
 
     /**
@@ -239,5 +253,102 @@ public class FragmentBase extends Fragment {
             // 退出时释放连接
             mTts.destroy();
         }
+        if (null != mAdView) {
+            mAdView.removeAllViews();
+        }
+        if (null != mBannerAd) {
+            mBannerAd.destroy();
+        }
+    }
+
+    protected void showBanner(String pid) {
+        if (mAdView != null) {
+            mBannerAd = new BannerAd(getActivity(), pid, new BannerAdListener() {
+
+                /**
+                 * Invoked when Banner Ad are available.
+                 */
+                @Override
+                public void onAdReady(View view) {
+                    try {
+                        if (null != view.getParent()) {
+                            ((ViewGroup) view.getParent()).removeView(view);
+                        }
+                        mAdView.removeAllViews();
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                        mAdView.addView(view, layoutParams);
+                    } catch (Exception e) {
+                        Log.e("AdtDebug", e.getLocalizedMessage());
+                    }
+                }
+
+                /**
+                 * Invoked when the end user clicked on the Banner Ad
+                 */
+                @Override
+                public void onAdClicked() {
+                    // bannerAd clicked
+                }
+
+                /**
+                 * Invoked when the call to load a Banner Ad has failed
+                 * String error contains the reason for the failure.
+                 */
+                @Override
+                public void onAdFailed(String error) {
+                    // bannerAd fail
+                }
+            });
+            mBannerAd.setAdSize(AdSize.SMART);
+            mBannerAd.loadAd();
+        }
+    }
+
+    protected void loadSplash(String pid) {
+        SplashAd.setSplashAdListener(pid, new SplashAdListener() {
+            @Override
+            public void onSplashAdLoad(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdFailed(String s, String s1) {
+
+            }
+
+            @Override
+            public void onSplashAdClicked(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdShowed(String s) {
+
+            }
+
+            @Override
+            public void onSplashAdShowFailed(String s, String s1) {
+
+            }
+
+            @Override
+            public void onSplashAdTick(String s, long l) {
+
+            }
+
+            @Override
+            public void onSplashAdDismissed(String s) {
+                SplashAd.loadAd(s);
+            }
+        });
+        SplashAd.loadAd(pid);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadSplash(Constants.SPLASH_PID);
     }
 }

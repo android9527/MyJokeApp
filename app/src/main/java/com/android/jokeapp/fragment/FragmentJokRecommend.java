@@ -137,6 +137,7 @@ public class FragmentJokRecommend extends FragmentBase implements MyJokeListAdap
         // whichFragment).getPagerTabStrip();
         // }
 
+        mAdView = v.findViewById(R.id.adView);
         mQuickReturnView = drawerLayoutActivity.getmActionBar();
         initInsetTop(v);
         return v;
@@ -146,6 +147,7 @@ public class FragmentJokRecommend extends FragmentBase implements MyJokeListAdap
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSpeechSynthesis();
+        showBanner(Constants.BANNER_CONTENT_1);
 
         mListView = mRefreshListView.getRefreshableView();
         mListView.setOnTouchListener(new OnTouchListener() {
