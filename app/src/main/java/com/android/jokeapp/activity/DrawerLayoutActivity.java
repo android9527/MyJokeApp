@@ -143,19 +143,18 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
         mActionBarHelper.init();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED,
                 Gravity.LEFT);
-        // ActionBarDrawerToggle provides convenient helpers for tying together the
-        // prescribed interactions between a top-level sliding drawer and the action bar.
-//        setSupportActionBar(mToolbar);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 mToolbar, R.string.drawer_open,
                 R.string.drawer_close);
         initEvents();
 
-        initInsetTop(frameContent);
+//        initInsetTop(frameContent);
         //        initTint();
         switchContent(0);
 
 //        showBanner();
+
+        requestPermissions();
     }
 
     public void initInsetTop(View rootView) {

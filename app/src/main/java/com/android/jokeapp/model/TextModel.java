@@ -9,18 +9,9 @@ public class TextModel extends BaseModel {
     {
         return "TextModel [dingNumber=" + dingNumber + ", caiNumber="
                 + caiNumber + ", hasDing=" + hasDing + ", hasCai=" + hasCai
-                + ", code=" + code + ", text=" + text + "]";
+                + ", code=" + getCode() + ", text=" + getText() + "]";
     }
 
-    public TextModel(int code, String text)
-    {
-        this.code = code;
-        this.text = text;
-        Random random = new Random();
-        dingNumber = random.nextInt(1000);
-        caiNumber = random.nextInt(400);
-    }
-    
     private int dingNumber, caiNumber;
 
     public int getDingNumber()
@@ -64,13 +55,12 @@ public class TextModel extends BaseModel {
     {
         this.hasCai = hasCai;
     }
-    
-    
+
     public void initDingAndCaiNumber()
     {
     	Random random = new Random();
         dingNumber = random.nextInt(1000);
-        caiNumber = random.nextInt(400);
+        caiNumber = random.nextInt(200);
     }
     
 }

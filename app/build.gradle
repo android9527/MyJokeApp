@@ -8,11 +8,12 @@ android {
     buildToolsVersion "28.0.2"
 
     defaultConfig {
-        applicationId "com.example.myapplication"
+        applicationId "com.android9527.joke"
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,6 +29,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 }
 
@@ -58,5 +65,7 @@ dependencies {
     implementation files('libs/nineoldandroids-2.4.0.jar')
     implementation group: 'org.wso2.apache.httpcomponents', name: 'httpclient', version: '4.3.1.wso2v1'
     implementation group: 'commons-logging', name: 'commons-logging', version: '1.2'
+    implementation 'com.tencentcloudapi:tencentcloud-sdk-java:3.1.258'
+    implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
     implementation 'androidx.cardview:cardview:1.0.0'
 }

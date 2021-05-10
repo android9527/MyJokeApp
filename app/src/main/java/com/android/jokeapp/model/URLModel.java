@@ -13,7 +13,7 @@ public class URLModel extends BaseModel {
 
 	@Override
 	public String toString() {
-		return "URLModel [url=" + url + ", code=" + code + ", text=" + text
+		return "URLModel [url=" + url + ", code=" + getCode() + ", text=" + getText()
 				+ "]";
 	}
 

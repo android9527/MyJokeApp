@@ -1,31 +1,46 @@
 package com.android.jokeapp.model;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class BaseModel implements Serializable{
+public class BaseModel implements Serializable {
 
-	int code;
-	String text;
+    String globalId;
+    IntentModel intent;
+    List<ResultModel> results;
 
-	public int getCode() {
-		return code;
-	}
+    public double getCode() {
+        if (intent != null) {
+            return intent.code;
+        }
+        return -1;
+    }
 
-	public void setCode(int code) {
-		this.code = code;
-	}
+    public String getText() {
+        if (results != null && results.size() > 0 && results.get(0).values != null) {
+            ValueModel valueModel = results.get(0).values;
+            return valueModel.text;
+        }
+        return "";
+    }
 
-	public String getText() {
-		return text;
-	}
+    @Override
+    public String toString() {
+        return "BaseModel [code=" + getCode() + ", text=" + getText() + "]";
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    private static class IntentModel {
+        double code;
+    }
 
-	@Override
-	public String toString() {
-		return "BaseModel [code=" + code + ", text=" + text + "]";
-	}
+    private static class ResultModel {
+        int groupType;
+        String resultType;
+        ValueModel values;
+    }
+
+    private static class ValueModel {
+        String text;
+    }
 
 }

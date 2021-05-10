@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.tsz.afinal.FinalActivity;
 import net.tsz.afinal.annotation.view.ViewInject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,35 +43,33 @@ import com.iflytek.speech.setting.IatSettings;
 import com.iflytek.sunflower.FlowerCollector;
 
 public class FragmentCharAt extends FragmentBase implements View.OnClickListener,
-    ChatMsgViewAdapter.OnClickContentCallback
-{
+        ChatMsgViewAdapter.OnClickContentCallback {
     private static final String TAG = "FragmentCharAt";
-    
+
     // 语音听写对象
     private SpeechRecognizer mIat;
-    
+
     // 语音听写UI
     private RecognizerDialog iatDialog;
-    
+
     @ViewInject(id = R.id.btn_send)
     private Button mBtnSend;
-    
+
     @ViewInject(id = R.id.et_sendmessage)
     private EditText mEditTextContent;
-    
+
     @ViewInject(id = R.id.listview)
     private ListView mListView;
-    
+
     private ChatMsgViewAdapter mAdapter;
-    
+
     private List<ChatMsgEntity> mDataArrays = new ArrayList<ChatMsgEntity>();
-    
+
     @ViewInject(id = R.id.ivPopUp)
     private ImageView chattingModeBtn;
-    
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // 启动activity时不自动弹出软键盘
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -78,22 +77,20 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         initInsetTop(v);
         return v;
     }
-    
+
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initSpeechRecognizer();
         initSpeechSynthesis();
         initView();
         initData();
     }
-    
+
     /**
      * 语音识别
      */
-    private void initSpeechRecognizer()
-    {
+    private void initSpeechRecognizer() {
         // 初始化识别对象
         mIat = SpeechRecognizer.createRecognizer(getActivity(), mInitListener);
         // 初始化听写Dialog,如果只使用有UI听写功能,无需创建SpeechRecognizer
@@ -102,47 +99,39 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         // 设置参数
         setParam();
     }
-    
+
     /**
      * 初始化监听器。
      */
-    private InitListener mInitListener = new InitListener()
-    {
-        
+    private InitListener mInitListener = new InitListener() {
+
         @Override
-        public void onInit(int code)
-        {
-            if (code != ErrorCode.SUCCESS)
-            {
+        public void onInit(int code) {
+            if (code != ErrorCode.SUCCESS) {
                 showTip("初始化失败,错误码：" + code);
             }
         }
     };
-    
-    public void initView()
-    {
+
+    public void initView() {
         mBtnSend.setOnClickListener(this);
         chattingModeBtn.setOnClickListener(this);
     }
-    
-    public void initData()
-    {
+
+    public void initData() {
         mAdapter = new ChatMsgViewAdapter(getActivity(), mDataArrays);
         mListView.setAdapter(mAdapter);
         mAdapter.setOnClickContentCallback(this);
     }
-    
-    private Handler mGetMessageHandler = new Handler()
-    {
-        
+
+    private Handler mGetMessageHandler = new Handler() {
+
         @Override
-        public void handleMessage(Message msg)
-        {
-            
-            switch (msg.what)
-            {
+        public void handleMessage(Message msg) {
+
+            switch (msg.what) {
                 case Constants.MESSAGE_WHAT_SUCCESS:
-                    TextModel model = (TextModel)msg.obj;
+                    TextModel model = (TextModel) msg.obj;
                     ChatMsgEntity entity = new ChatMsgEntity();
                     entity.setName("小薇");
                     entity.setMsgType(true);
@@ -153,21 +142,19 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
                 case Constants.MESSAGE_WHAT_EXCEPTION:
                     // TODO
                     break;
-                
+
                 default:
                     break;
             }
             super.handleMessage(msg);
         }
-        
+
     };
-    
+
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         // TODO Auto-generated method stub
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.btn_send:
                 send();
                 break;
@@ -179,57 +166,52 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
                 break;
         }
     }
-    
-    private void send()
-    {
+
+    private void send() {
         String contString = mEditTextContent.getText().toString();
-        if (contString.length() > 0)
-        {
+        if (contString.length() > 0) {
             ChatMsgEntity entity = new ChatMsgEntity();
             entity.setName("我");
             entity.setMsgType(false);
             entity.setText(contString);
-            
+
             mDataArrays.add(entity);
             mAdapter.notifyDataSetChanged();
             ApiUtil.executeMessageTask(mGetMessageHandler, contString);
-            
+
             mEditTextContent.setText("");
-            
+
             mListView.setSelection(mListView.getCount() - 1);
         }
-        
-        ((InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getActivity().getCurrentFocus()
-            .getWindowToken(),
-            InputMethodManager.HIDE_NOT_ALWAYS);
+
+        View currentFocus = getActivity().getCurrentFocus();
+        if (currentFocus != null) {
+            ((InputMethodManager) getActivity()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(currentFocus.getWindowToken(),
+                            InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
-    
-    int ret = 0;// 函数调用返回值
-    
+
     /**
      * 参数设置
-     * 
-     * @param param
+     *
      * @return
      */
-    public void setParam()
-    {
+    public void setParam() {
         // 清空参数
         mIat.setParameter(SpeechConstant.PARAMS, null);
-        
+
         // 设置听写引擎
         mIat.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
         // 设置返回结果格式
         mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
-        
+
         String lag = mSharedPreferences.getString("iat_language_preference", "mandarin");
-        if (lag.equals("en_us"))
-        {
+        if (lag.equals("en_us")) {
             // 设置语言
             mIat.setParameter(SpeechConstant.LANGUAGE, "en_us");
-        }
-        else
-        {
+        } else {
             // 设置语言
             mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
             // 设置语言区域
@@ -243,22 +225,20 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         mIat.setParameter(SpeechConstant.ASR_PTT, mSharedPreferences.getString("iat_punc_preference", "1"));
         // 设置音频保存路径
         mIat.setParameter(SpeechConstant.ASR_AUDIO_PATH, Environment.getExternalStorageDirectory()
-            + "/iflytek/wavaudio.pcm");
+                + "/iflytek/wavaudio.pcm");
     }
-    
+
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         // 退出时释放连接
         mIat.cancel();
         mIat.destroy();
         releaseTTS();
     }
-    
+
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         // if(mIat != null){
         // ret = mIat.startListening(recognizerListener);
         // }
@@ -267,10 +247,9 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         FlowerCollector.onPageStart("FragmentCharAt");
         super.onResume();
     }
-    
+
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         // if(mIat != null){
         // mIat.stopListening();
         // }
@@ -279,34 +258,30 @@ public class FragmentCharAt extends FragmentBase implements View.OnClickListener
         FlowerCollector.onPause(getActivity());
         super.onPause();
     }
-    
+
     /**
      * 听写UI监听器
      */
-    private RecognizerDialogListener recognizerDialogListener = new RecognizerDialogListener()
-    {
-        public void onResult(RecognizerResult results, boolean isLast)
-        {
+    private RecognizerDialogListener recognizerDialogListener = new RecognizerDialogListener() {
+        public void onResult(RecognizerResult results, boolean isLast) {
             String text = JsonParser.parseIatResult(results.getResultString());
             mEditTextContent.append(text);
             mEditTextContent.setSelection(mEditTextContent.length());
         }
-        
+
         /**
          * 识别回调错误.
          */
-        public void onError(SpeechError error)
-        {
+        public void onError(SpeechError error) {
             showTip(error.getPlainDescription(true));
         }
-        
+
     };
-    
+
     @Override
-    public void onClickContentCallback(int position)
-    {
+    public void onClickContentCallback(int position) {
         final ChatMsgEntity chatMsgEntity = mAdapter.getItem(position);
         startSpeaking(chatMsgEntity.getText());
     }
-    
+
 }
