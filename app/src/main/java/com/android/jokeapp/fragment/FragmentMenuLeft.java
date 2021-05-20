@@ -34,8 +34,8 @@ public class FragmentMenuLeft extends FragmentBase {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_left_menu, container, false);
 //        initInsetTop(rootView);
-        mAdView = rootView.findViewById(R.id.banner_left);
-        showBanner(BANNER_LEFT);
+//        mAdView = rootView.findViewById(R.id.banner_left);
+//        showBanner(BANNER_LEFT);
         return rootView;
     }
 

@@ -1,14 +1,5 @@
 package com.android.jokeapp.activity;
 
-import com.android.jokeapp.common.Constants;
-import com.openmediation.sdk.InitCallback;
-import com.openmediation.sdk.InitConfiguration;
-import com.openmediation.sdk.OmAds;
-import com.openmediation.sdk.interstitial.InterstitialAd;
-import com.openmediation.sdk.splash.SplashAd;
-import com.openmediation.sdk.splash.SplashAdListener;
-import com.openmediation.sdk.utils.error.Error;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -16,6 +7,13 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.android.jokeapp.common.Constants;
+import com.openmediation.sdk.InitCallback;
+import com.openmediation.sdk.InitConfiguration;
+import com.openmediation.sdk.OmAds;
+import com.openmediation.sdk.interstitial.InterstitialAd;
+import com.openmediation.sdk.utils.error.Error;
 
 public class BaseFragmentActivity extends AppCompatActivity {
     @Override
@@ -88,43 +86,4 @@ public class BaseFragmentActivity extends AppCompatActivity {
         InterstitialAd.showAd();
     }
 
-    protected void loadSplash(String pid) {
-        SplashAd.setSplashAdListener(pid, new SplashAdListener() {
-            @Override
-            public void onSplashAdLoad(String s) {
-
-            }
-
-            @Override
-            public void onSplashAdFailed(String s, String s1) {
-
-            }
-
-            @Override
-            public void onSplashAdClicked(String s) {
-
-            }
-
-            @Override
-            public void onSplashAdShowed(String s) {
-
-            }
-
-            @Override
-            public void onSplashAdShowFailed(String s, String s1) {
-
-            }
-
-            @Override
-            public void onSplashAdTick(String s, long l) {
-
-            }
-
-            @Override
-            public void onSplashAdDismissed(String s) {
-                SplashAd.loadAd(s);
-            }
-        });
-        SplashAd.loadAd(pid);
-    }
 }

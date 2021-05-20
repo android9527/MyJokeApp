@@ -218,7 +218,7 @@ public class DrawerLayoutActivity extends BaseFragmentActivity {
                 if (mCurrentContent == contentChatFragment) {
                     return;
                 }
-                showIsAd();
+//                showIsAd();
                 break;
             case 3:
                 if (currPosition == 3)
